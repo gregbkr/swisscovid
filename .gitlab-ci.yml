@@ -1,0 +1,37 @@
+image: node:latest
+
+stages:
+- build
+- deploy  
+
+variables:
+  AWS_DEFAULT_REGION: eu-west-3
+  BUCKET_NAME: swisscovid.com
+
+cache:
+  paths:
+    - node_modules/
+
+buildGatsby:
+  stage: build
+  script:
+    - npm install
+    - ./node_modules/.bin/gatsby build --prefix-paths
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
+    
+deploys3:
+  image: "python:3.6.6"
+  stage: deploy
+  dependencies:
+    - buildGatsby
+  before_script:
+    - pip install awscli
+  script:
+    - aws s3 cp public s3://${BUCKET_NAME} --recursive
+  environment:
+    name: 's3-deploy'
+    url: http://${BUCKET_NAME}.s3-website.${AWS_DEFAULT_REGION}.amazonaws.com
