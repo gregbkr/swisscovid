@@ -5,8 +5,8 @@ stages:
 - deploy  
 
 variables:
-  AWS_DEFAULT_REGION: eu-west-3
-  BUCKET_NAME: swisscovid.com
+  AWS_DEFAULT_REGION: eu-west-1
+  BUCKET_NAME: swisscovid.satoshi.tech
 
 cache:
   paths:
